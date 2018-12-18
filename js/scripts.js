@@ -34,6 +34,8 @@ function defaultstyle(feature) {
 function highlightFeature(e) {
     var totalvotecountlayer = e.target;
 
+    info.update(totalvotecountlayer.feature.properties);
+
     totalvotecountlayer.setStyle({
         weight: 5,
         color: '#666',
@@ -49,6 +51,7 @@ function highlightFeature(e) {
 // creating a mouseout event listener
 function resetHighlight(e) {
     QueensElectionDistricts.resetStyle(e.target);
+    info.update();
 }
 
 // creating zoom on election district click
@@ -64,23 +67,6 @@ function onEachFeature(feature, totalvotecountlayer) {
     });
 }
 
-// var votinginfo = L.control();
-//
-// votinginfo.onAdd = function (map) {
-//     this._div = L.DomUtil.create('votinginfodiv', 'votinginfo');
-//     this.update();
-//     return this._div;
-// };
-//
-// // method that we will use to update the div control based on feature properties passed
-// votinginfo.update = function (props) {
-//     votinginfo.innerHTML = '<h4>Sept 2018 Democratic Primary for Governor</h4>' +  (props ?
-//         '<b>' + props.name + '</b><br />' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' people / mi<sup>2</sup>'
-//         : 'Hover over a state');
-// };
-//
-// votinginfo.addTo(mymap);
-
 var info = L.control();
 
 info.onAdd = function (map) {
@@ -92,7 +78,7 @@ info.onAdd = function (map) {
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
     this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' +  (props ?
-        '<b>' + props.name + '</b><br />' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' people / mi<sup>2</sup>'
+        '<b>' + props.ElectDist + '</b><br/>' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' total votes cast'
         : 'Hover over an Electrion District to see voting results');
 };
 
