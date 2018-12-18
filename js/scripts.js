@@ -61,6 +61,7 @@ function zoomToFeature(e) {
     mymap.fitBounds(e.target.getBounds());
 }
 
+// creating a function that performs mouseover, mouseout, and zooms on the geoJson
 function onEachFeature(feature, totalvotecountlayer) {
     totalvotecountlayer.on({
         mouseover: highlightFeature,
@@ -72,7 +73,7 @@ function onEachFeature(feature, totalvotecountlayer) {
 var totalvotecountinfo = L.control();
 
 totalvotecountinfo.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div = L.DomUtil.create('div', 'totalvoteinfo'); // create a div with a class "info"
     this.update();
     return this._div;
 };
@@ -85,3 +86,24 @@ totalvotecountinfo.update = function (props) {
 };
 
 totalvotecountinfo.addTo(mymap);
+
+// creating a legend for total votes cast
+var totalvotecountlegend = L.control({position: 'bottomright'});
+
+totalvotecountlegend.onAdd = function (map) {
+
+    var totalvotecountlegenddiv = L.DomUtil.create('div', 'totalvotecountlegend'),
+        grades = [0, 50, 100, 200, 300, 350],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+        totalvotecountlegenddiv.innerHTML +=
+            '<i style="background:' + totalvotecount(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+
+    return totalvotecountlegenddiv;
+};
+
+totalvotecountlegend.addTo(mymap);
