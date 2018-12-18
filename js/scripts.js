@@ -88,7 +88,7 @@ totalvotecountinfo.update = function (props) {
 totalvotecountinfo.addTo(mymap);
 
 // creating a legend for total votes cast
-var totalvotecountlegend = L.control({position: 'bottomright'});
+var totalvotecountlegend = L.control({position: 'topright'});
 
 totalvotecountlegend.onAdd = function (map) {
 
