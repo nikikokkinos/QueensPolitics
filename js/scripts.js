@@ -30,10 +30,11 @@ function defaultstyle(feature) {
         fillOpacity: 1.0,
       };}
 
-// creating a mouseover event listener
+// creating a mouseover event listener function
 function highlightFeature(e) {
     var totalvotecountlayer = e.target;
 
+    // updating custom control based on mouseover
     totalvotecountinfo.update(totalvotecountlayer.feature.properties);
 
     totalvotecountlayer.setStyle({
@@ -51,12 +52,13 @@ function highlightFeature(e) {
 // creating a mouseout event listener
 function resetHighlight(e) {
     QueensElectionDistricts.resetStyle(e.target);
+    // updating custom control based on mouseout
     totalvotecountinfo.update();
 }
 
 // creating zoom on election district click
 function zoomToFeature(e) {
-    map.fitBounds(e.target.getBounds());
+    mymap.fitBounds(e.target.getBounds());
 }
 
 function onEachFeature(feature, totalvotecountlayer) {
