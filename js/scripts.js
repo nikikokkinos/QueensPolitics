@@ -11,11 +11,6 @@ var QueensElectionDistricts = L.geoJson(QueensElectionDistricts, {
     onEachFeature: onEachFeature
   }).addTo(mymap);
 
-  // geojson = L.geoJson(statesData, {
-  //     style: style,
-  //     onEachFeature: onEachFeature
-  // }).addTo(map);
-
 // creating a function that colors each ED by total votes cast
 function totalvotecount(QueensCountyGovernorDemocraticPrimarySept2018_Total) {
     return QueensCountyGovernorDemocraticPrimarySept2018_Total > 350  ? '#980043' :
@@ -37,9 +32,9 @@ function defaultstyle(feature) {
 
 // creating a mouseover event listener
 function highlightFeature(e) {
-    var layer = e.target;
+    var totalvotecountlayer = e.target;
 
-    layer.setStyle({
+    totalvotecountlayer.setStyle({
         weight: 5,
         color: '#666',
         dashArray: '',
@@ -47,7 +42,7 @@ function highlightFeature(e) {
     });
 
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
+        totalvotecountlayer.bringToFront();
     }
 }
 
@@ -56,10 +51,49 @@ function resetHighlight(e) {
     QueensElectionDistricts.resetStyle(e.target);
 }
 
-function onEachFeature(feature, layer) {
-    layer.on({
+// creating zoom on election district click
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, totalvotecountlayer) {
+    totalvotecountlayer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
-        // click: zoomToFeature
+        click: zoomToFeature
     });
 }
+
+// var votinginfo = L.control();
+//
+// votinginfo.onAdd = function (map) {
+//     this._div = L.DomUtil.create('votinginfodiv', 'votinginfo');
+//     this.update();
+//     return this._div;
+// };
+//
+// // method that we will use to update the div control based on feature properties passed
+// votinginfo.update = function (props) {
+//     votinginfo.innerHTML = '<h4>Sept 2018 Democratic Primary for Governor</h4>' +  (props ?
+//         '<b>' + props.name + '</b><br />' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' people / mi<sup>2</sup>'
+//         : 'Hover over a state');
+// };
+//
+// votinginfo.addTo(mymap);
+
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+info.update = function (props) {
+    this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' +  (props ?
+        '<b>' + props.name + '</b><br />' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' people / mi<sup>2</sup>'
+        : 'Hover over an Electrion District to see voting results');
+};
+
+info.addTo(mymap);
