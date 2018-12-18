@@ -34,7 +34,7 @@ function defaultstyle(feature) {
 function highlightFeature(e) {
     var totalvotecountlayer = e.target;
 
-    info.update(totalvotecountlayer.feature.properties);
+    totalvotecountinfo.update(totalvotecountlayer.feature.properties);
 
     totalvotecountlayer.setStyle({
         weight: 5,
@@ -51,7 +51,7 @@ function highlightFeature(e) {
 // creating a mouseout event listener
 function resetHighlight(e) {
     QueensElectionDistricts.resetStyle(e.target);
-    info.update();
+    totalvotecountinfo.update();
 }
 
 // creating zoom on election district click
@@ -67,19 +67,19 @@ function onEachFeature(feature, totalvotecountlayer) {
     });
 }
 
-var info = L.control();
+var totalvotecountinfo = L.control();
 
-info.onAdd = function (map) {
+totalvotecountinfo.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
     this.update();
     return this._div;
 };
 
 // method that we will use to update the control based on feature properties passed
-info.update = function (props) {
+totalvotecountinfo.update = function (props) {
     this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' +  (props ?
         '<b>' + props.ElectDist + '</b><br/>' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' total votes cast'
         : 'Hover over an Electrion District to see voting results');
 };
 
-info.addTo(mymap);
+totalvotecountinfo.addTo(mymap);
