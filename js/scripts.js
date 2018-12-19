@@ -21,7 +21,7 @@ function totalvotecount(QueensCountyGovernorDemocraticPrimarySept2018_Total) {
                                                                         '#ffffff'
       ;}
 
-// setting the defaultstyle by total votes cast
+// setting the defaultstyle so that it equates to the colors assigned by the function above
 function defaultstyle(feature) {
     return {
         fillColor: totalvotecount(feature.properties.QueensCountyGovernorDemocraticPrimarySept2018_Total),
@@ -30,17 +30,16 @@ function defaultstyle(feature) {
         fillOpacity: 1.0,
       };}
 
-// creating a mouseover event listener function
+// creating a function that highlights each ED when it's hovered over
 function highlightFeature(e) {
     var totalvotecountlayer = e.target;
 
-    // updating custom control based on mouseover
-    totalvotecountinfo.update(totalvotecountlayer.feature.properties);
+// the custom control that was made below is updated
+totalvotecountinfo.update(totalvotecountlayer.feature.properties);
 
     totalvotecountlayer.setStyle({
         weight: 5,
         color: '#666',
-        dashArray: '',
         fillOpacity: 0.7
     });
 
@@ -49,9 +48,10 @@ function highlightFeature(e) {
     }
 }
 
-// creating a mouseout event listener
+// creating a function that resets the map when user hovers out
 function resetHighlight(e) {
     totalvotecountlayer.resetStyle(e.target);
+    
     // updating custom control based on mouseout
     totalvotecountinfo.update();
 }
@@ -61,7 +61,7 @@ function zoomToFeature(e) {
     mymap.fitBounds(e.target.getBounds());
 }
 
-// creating a function that performs mouseover, mouseout, and zooms on the geoJson
+// creating a function that groups together the all hover events and the zoom funciton that was created
 function onEachFeature(feature, totalvotecountlayer) {
     totalvotecountlayer.on({
         mouseover: highlightFeature,
@@ -70,6 +70,7 @@ function onEachFeature(feature, totalvotecountlayer) {
     });
 }
 
+// creating a custom div that changes the ed information within it based on mouseover
 var totalvotecountinfo = L.control();
 
 totalvotecountinfo.onAdd = function (map) {
