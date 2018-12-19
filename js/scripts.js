@@ -34,8 +34,8 @@ function defaultstyle(feature) {
 function highlightFeature(e) {
     var totalvotecountlayer = e.target;
 
-// the custom control that was made below is updated
-totalvotecountinfo.update(totalvotecountlayer.feature.properties);
+    // the custom control that was made below is updated
+    totalvotecountinfo.update(totalvotecountlayer.feature.properties);
 
     totalvotecountlayer.setStyle({
         weight: 5,
@@ -51,7 +51,7 @@ totalvotecountinfo.update(totalvotecountlayer.feature.properties);
 // creating a function that resets the map when user hovers out
 function resetHighlight(e) {
     totalvotecountlayer.resetStyle(e.target);
-    
+
     // updating custom control based on mouseout
     totalvotecountinfo.update();
 }
