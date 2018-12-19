@@ -26,6 +26,7 @@ var NixonLayer = L.geoJson(QueensElectionDistricts, {
 var baselayers = {
     "Andrew Cuomo Votes": CuomoLayer,
     "Cynthia Nixon Votes": NixonLayer,
+    "Total Votes Cast": totalvotecountlayer,
   };
 
 var overlays = {
