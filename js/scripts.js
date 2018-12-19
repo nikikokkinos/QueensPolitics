@@ -5,8 +5,8 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-// substantiating geojson to map
-var QueensElectionDistricts = L.geoJson(QueensElectionDistricts, {
+// the layer that automatically loads
+var totalvotecountlayer = L.geoJson(QueensElectionDistricts, {
     style: defaultstyle,
     onEachFeature: onEachFeature
   }).addTo(mymap);
@@ -51,7 +51,7 @@ function highlightFeature(e) {
 
 // creating a mouseout event listener
 function resetHighlight(e) {
-    QueensElectionDistricts.resetStyle(e.target);
+    totalvotecountlayer.resetStyle(e.target);
     // updating custom control based on mouseout
     totalvotecountinfo.update();
 }
