@@ -93,7 +93,68 @@ assemblyinfo.update = function (assemblyprops) {
     this._div.innerHTML = '<h4>Assembly District</h4>' +  (assemblyprops ?
         '<b>' + assemblyprops.AssemDist : 'Hover to find the Assembly Distrct');};
 
-// assemblyinfo.addTo(mymap);
+
+        // all controls for AssemblyOverlay to add interaction to layer
+
+        // creating a function that highlights the ad when it's hovered over
+        function assemblyhighlightFeature(e) {
+            var AssemblyOverlay = e.target;
+
+            // updating custom control based on user hover
+            assemblyinfo.update(AssemblyOverlay.feature.properties);
+
+            // setting styling for ads
+            AssemblyOverlay.setStyle({
+                weight: 5,
+                color: 'none',
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                AssemblyOverlay.bringToFront();
+            }
+        }
+
+        // creating a functiont that resets highlight when user hovers out
+        function assemblyresetHighlight(e) {
+            AssemblyOverlay.resetStyle(e.target);
+
+        // updating custom control based on mouseout
+            assemblyinfo.update();
+        }
+
+        // creating zoom on election district click
+        function assemblyzoomToFeature(e) {
+            mymap.fitBounds(e.target.getBounds());
+        }
+
+        // creating a function that groups together all the hover events and the zoom
+        function assemblyonEachFeature(feature, AssemblyOverlay) {
+            AssemblyOverlay.on({
+                mouseover: assemblyhighlightFeature,
+                mouseout: assemblyresetHighlight,
+                click: assemblyzoomToFeature
+            });
+        }
+
+        // creating a custom control that changes information within it based on mouseover
+        var assemblyinfo = L.control();
+
+        assemblyinfo.onAdd = function (assemblymap) {
+            this._div = L.DomUtil.create('div', 'assemblyinfo'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        assemblyinfo.update = function (assemblyprops) {
+            this._div.innerHTML = '<h4>Assembly District</h4>' +  (assemblyprops ?
+                '<b>' + assemblyprops.AssemDist : 'Hover to find the Assembly Distrct');};
+
+        assemblyinfo.addTo(mymap);
+
+$('.assemblyinfo').hide()
+
 
 // controls & styling for NixonLayer
 
@@ -173,7 +234,9 @@ var nixoninfo = L.control();
         : 'Hover over an Electrion District to see voting results');
   };
 
-// nixoninfo.addTo(mymap);
+nixoninfo.addTo(mymap);
+
+// $('.nixoninfo').hide()
 
 // controls & styling for CuomoLayer
 
@@ -253,63 +316,19 @@ var cuomoinfo = L.control();
         : 'Hover over an Electrion District to see voting results');
   };
 
-// cuomoinfo.addTo(mymap);
+cuomoinfo.addTo(mymap);
 
-// all controls for AssemblyOverlay to add interaction to layer
+// $('.cuomoinfo').hide()
 
-// creating a function that highlights the ad when it's hovered over
-function assemblyhighlightFeature(e) {
-    var AssemblyOverlay = e.target;
-
-    // updating custom control based on user hover
-    assemblyinfo.update(AssemblyOverlay.feature.properties);
-
-    // setting styling for ads
-    AssemblyOverlay.setStyle({
-        weight: 5,
-        color: 'none',
-        fillOpacity: 0.7
-    });
-
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        AssemblyOverlay.bringToFront();
-    }
-}
-
-// creating a functiont that resets highlight when user hovers out
-function assemblyresetHighlight(e) {
-    AssemblyOverlay.resetStyle(e.target);
-
-// updating custom control based on mouseout
-    assemblyinfo.update();
-}
-
-// creating zoom on election district click
-function assemblyzoomToFeature(e) {
-    mymap.fitBounds(e.target.getBounds());
-}
-
-// creating a function that groups together all the hover events and the zoom
-function assemblyonEachFeature(feature, AssemblyOverlay) {
-    AssemblyOverlay.on({
-        mouseover: assemblyhighlightFeature,
-        mouseout: assemblyresetHighlight,
-        click: assemblyzoomToFeature
-    });
-}
-
-// creating a custom control that changes information within it based on mouseover
-var assemblyinfo = L.control();
-
-assemblyinfo.onAdd = function (assemblymap) {
-    this._div = L.DomUtil.create('div', 'assemblyinfo'); // create a div with a class "info"
-    this.update();
-    return this._div;
-};
-
-// method that we will use to update the control based on feature properties passed
-assemblyinfo.update = function (assemblyprops) {
-    this._div.innerHTML = '<h4>Assembly District</h4>' +  (assemblyprops ?
-        '<b>' + assemblyprops.AssemDist : 'Hover to find the Assembly Distrct');};
-
-// assemblyinfo.addTo(mymap);
+// map.on('baselayerchange', LayerToggle);
+//
+// function LayerToggle(eventLayer) {
+//   $('.cuomoinfo').hide()
+//   var name = eventLayer.name
+//   if (name === 'Andrew Cuomo Votes') {
+//     $('.nixoninfo').show()
+//   }
+//   if (name === 'Total Votes Cast') {
+//     $('.nixoninfo').show()
+//   }
+// }
