@@ -195,4 +195,6 @@ var nixoninfo = L.control();
         : 'Hover over an Electrion District to see voting results');
   };
 
-// nixoninfo.addTo(mymap);
+nixoninfo.addTo(mymap);
+
+$('.nixoninfo').hide()
