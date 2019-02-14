@@ -1,21 +1,18 @@
 // this js is established to create overlay layers on mymap
 
 var AssemblyOverlay = L.geoJSON(QueensAssemblyDistricts, {
-  fillColor: "none",
-  fillOpacity: .5,
-  color: "#2b2e5e",
+    style: assemblystyle,
 })
 
 var CouncilOverlay = L.geoJson(QueensCouncilDistricts, {
   fillColor: "none",
-  fillOpacity: .5,
   color: "#2b2e5e",
 })
 
 var CuomoLayer = L.geoJson(QueensElectionDistricts, {
     style: cuomostyle,
     onEachFeature: cuomoonEachFeature
-  })
+})
 
 var NixonLayer = L.geoJson(QueensElectionDistricts, {
     style: nixonstyle,
@@ -26,7 +23,7 @@ var baselayers = {
     "Andrew Cuomo Votes": CuomoLayer,
     "Cynthia Nixon Votes": NixonLayer,
     "Total Votes Cast": totalvotecountlayer,
-  };
+};
 
 var overlays = {
   "NYS Assembly Districts": AssemblyOverlay,
@@ -34,6 +31,54 @@ var overlays = {
 };
 
 L.control.layers(baselayers, overlays).addTo(mymap);
+
+// Assembly District code
+
+// setting the default styling for assembly districts
+function assemblystyle(featurez) {
+  return {
+    fillColor: "none",
+    color: "#2b2e5e",
+  };
+}
+
+// setting the highlight on mouseover styling for assembly districts
+// function assemblyhighlightFeature(a) {
+//   var AssemblyOverlay = a.target;
+//   AssemblyOverlay.setStyle({
+//       weight: 5,
+//       color: '#666',
+//       fillOpacity: 0.7
+//   });
+
+// code to bind a popup on assembly district mouseover
+
+
+// bringing the assembly district to the front
+if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+    AssemblyOverlay.bringToFront();
+  }
+
+// // creating a function that resets the map when user hovers out
+// function assemblyresetHighlight(a) {
+//     AssemblyOverlay.resetStyle(a.target);
+//     // // updating cuomo control based on mouseout
+//     // cuomoinfo.update();
+// }
+
+// creating zoom on assembly district click
+function assemblyzoomToFeature(a) {
+    mymap.fitBounds(a.target.getBounds());
+}
+
+// creating a function that groups together the all hover events and the zoom funciton that was created
+function assemblyonEachFeature(featurez, AssemblyOverlay) {
+    AssemblyOverlay.on({
+        // mouseover: assemblyhighlightFeature,
+        // mouseout: assemblyresetHighlight,
+        click: assemblyzoomToFeature
+    });
+}
 
 // controls & styling for CuomoLayer
 
@@ -109,15 +154,13 @@ var cuomoinfo = L.control();
 // method that we will use to update the control based on feature properties passed
   cuomoinfo.update = function (cuomoprops) {
     this._div.innerHTML = '<h4>Votes for Andrew M. Cuomo</h4>' +  (cuomoprops ?
-        '<b>' + cuomoprops.ElectDist + '</b><br/>' + cuomoprops.QueensCountyGovernorDemocraticPrimarySept2018_Cuomo + ' votes cast'
+        '<b>' + 'Election District' + ' ' + + cuomoprops.ElectDist + '</b><br/>' + cuomoprops.QueensCountyGovernorDemocraticPrimarySept2018_Cuomo + ' votes cast'
         : 'Hover over an Electrion District to see voting results');
   };
 
 cuomoinfo.addTo(mymap);
 
 $('.cuomoinfo').hide()
-
-// controls & styling for NixonLayer
 
 // creating a function that colors each ED by nixon votes
 function nixoncount(QueensCountyGovernorDemocraticPrimarySept2018_Nixon) {
@@ -191,7 +234,7 @@ var nixoninfo = L.control();
 // method that we will use to update the control based on feature properties passed
   nixoninfo.update = function (nixonprops) {
     this._div.innerHTML = '<h4>Votes for Cynthia Nixon</h4>' +  (nixonprops ?
-        '<b>' + nixonprops.ElectDist + '</b><br/>' + nixonprops.QueensCountyGovernorDemocraticPrimarySept2018_Nixon + ' votes cast'
+        '<b>' + 'Election District' + ' ' + + nixonprops.ElectDist + '</b><br/>' + nixonprops.QueensCountyGovernorDemocraticPrimarySept2018_Nixon + ' votes cast'
         : 'Hover over an Electrion District to see voting results');
   };
 

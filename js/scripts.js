@@ -81,8 +81,8 @@ totalvotecountinfo.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 totalvotecountinfo.update = function (props) {
-    this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' +  (props ?
-        '<b>' + props.ElectDist + '</b><br/>' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' total votes cast'
+    this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' + (props ?
+        '<b>' + 'Election District' + ' ' + props.ElectDist + '</b><br/>' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' total votes cast'
         : 'Hover over an Electrion District to see voting results');
 };
 
