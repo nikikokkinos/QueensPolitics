@@ -14,18 +14,30 @@ var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
 	// setting the default styling for assembly districts
 	function assemblystyle(featurez) {
 	  return {
-	    fillColor: "none",
+	    fillColor: "purple",
+			fillOpacity: .02,
 	    color: "#2b2e5e",
 	  };
 	}
 
+function assemblyOnEachFeature(afeature, QueensAssemblyDistricts) {
+	  QueensAssemblyDistricts.bindPopup('<h4>Assembly District</h4>'+ ' ' + afeature.properties.AssemDist);
+	}
+
 var AssemblyOverlay = L.geoJSON(QueensAssemblyDistricts, {
     style: assemblystyle,
+		onEachFeature: assemblyOnEachFeature,
 })
 
+function councilOnEachFeature(cfeature, QueensCouncilDistricts) {
+	  QueensCouncilDistricts.bindPopup('<h4>Council District</h4>'+ ' ' + cfeature.properties.CounDist);
+	}
+
 var CouncilOverlay = L.geoJson(QueensCouncilDistricts, {
-  fillColor: "none",
+  fillColor: "purple",
+	fillOpacity: .02,
   color: "#2b2e5e",
+	onEachFeature: councilOnEachFeature,
 })
 
 var CuomoLayer = L.geoJson(QueensElectionDistricts, {
