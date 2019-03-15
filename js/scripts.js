@@ -6,10 +6,50 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png
 }).addTo(mymap);
 
 // the layer that automatically loads
-var totalvotecountlayer = L.geoJson(QueensElectionDistricts, {
+var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
     style: defaultstyle,
     onEachFeature: onEachFeature
   }).addTo(mymap);
+
+	// setting the default styling for assembly districts
+	function assemblystyle(featurez) {
+	  return {
+	    fillColor: "none",
+	    color: "#2b2e5e",
+	  };
+	}
+
+var AssemblyOverlay = L.geoJSON(QueensAssemblyDistricts, {
+    style: assemblystyle,
+})
+
+var CouncilOverlay = L.geoJson(QueensCouncilDistricts, {
+  fillColor: "none",
+  color: "#2b2e5e",
+})
+
+var CuomoLayer = L.geoJson(QueensElectionDistricts, {
+    style: cuomostyle,
+    onEachFeature: cuomoonEachFeature
+})
+
+var NixonLayer = L.geoJson(QueensElectionDistricts, {
+    style: nixonstyle,
+    onEachFeature: nixononEachFeature
+})
+
+// creating a group for all the base layers
+var baselayers = {
+		"Total Votes Cast": TotalVoteCountLayer,
+    "Andrew Cuomo Votes": CuomoLayer,
+    "Cynthia Nixon Votes": NixonLayer,
+};
+
+// creating a group for all the overlays
+var overlays = {
+  "NYS Assembly Districts": AssemblyOverlay,
+  "NYC Council Districts": CouncilOverlay,
+};
 
 // creating a function that colors each ED by total votes cast
 function totalvotecount(QueensCountyGovernorDemocraticPrimarySept2018_Total) {
@@ -32,25 +72,25 @@ function defaultstyle(feature) {
 
 // creating a function that highlights each ED when it's hovered over
 function highlightFeature(e) {
-    var totalvotecountlayer = e.target;
+    var TotalVoteCountLayer = e.target;
 
     // the custom control that was made below is updated
-    totalvotecountinfo.update(totalvotecountlayer.feature.properties);
+    totalvotecountinfo.update(TotalVoteCountLayer.feature.properties);
 
-    totalvotecountlayer.setStyle({
+    TotalVoteCountLayer.setStyle({
         weight: 5,
         color: '#666',
         fillOpacity: 0.7
     });
 
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        totalvotecountlayer.bringToFront();
+        TotalVoteCountLayer.bringToFront();
     }
 }
 
 // creating a function that resets the map when user hovers out
 function resetHighlight(e) {
-    totalvotecountlayer.resetStyle(e.target);
+    TotalVoteCountLayer.resetStyle(e.target);
 
     // updating custom control based on mouseout
     totalvotecountinfo.update();
@@ -62,8 +102,8 @@ function zoomToFeature(e) {
 }
 
 // creating a function that groups together the all hover events and the zoom funciton that was created
-function onEachFeature(feature, totalvotecountlayer) {
-    totalvotecountlayer.on({
+function onEachFeature(feature, TotalVoteCountLayer) {
+    TotalVoteCountLayer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
         click: zoomToFeature
@@ -83,10 +123,52 @@ totalvotecountinfo.onAdd = function (map) {
 totalvotecountinfo.update = function (props) {
     this._div.innerHTML = '<h4>September 2018 Democratic Primary for Governor</h4>' + (props ?
         '<b>' + 'Election District' + ' ' + props.ElectDist + '</b><br/>' + props.QueensCountyGovernorDemocraticPrimarySept2018_Total + ' total votes cast'
-        : 'Hover over an Electrion District to see voting results');
+        : 'Hover over an Electrion District to see the total # of votes cast');
 };
 
 totalvotecountinfo.addTo(mymap);
+
+$('.totalvotecountinfo').hide()
+
+// creating a custom div that changes the ed information within it based on mouseover
+var cuomoinfo = L.control();
+
+  cuomoinfo.onAdd = function (cuomomap) {
+    this._div = L.DomUtil.create('div', 'cuomoinfo'); // create a div with a class "info"
+    this.update();
+    return this._div;
+  };
+
+// method that we will use to update the control based on feature properties passed
+  cuomoinfo.update = function (cuomoprops) {
+    this._div.innerHTML = '<h4>Votes for Andrew M. Cuomo</h4>' +  (cuomoprops ?
+        '<b>' + 'Election District' + ' ' + + cuomoprops.ElectDist + '</b><br/>' + cuomoprops.QueensCountyGovernorDemocraticPrimarySept2018_Cuomo + ' votes cast'
+        : 'Hover over an Electrion District to see votes cast for Cuomo');
+  };
+
+cuomoinfo.addTo(mymap);
+
+$('.cuomoinfo').hide()
+
+// creating a custom div that changes the ed information within it based on mouseover
+var nixoninfo = L.control();
+
+  nixoninfo.onAdd = function (nixonmap) {
+    this._div = L.DomUtil.create('div', 'nixoninfo'); // create a div with a class "info"
+    this.update();
+    return this._div;
+  };
+
+// method that we will use to update the control based on feature properties passed
+  nixoninfo.update = function (nixonprops) {
+    this._div.innerHTML = '<h4>Votes for Cynthia Nixon</h4>' +  (nixonprops ?
+        '<b>' + 'Election District' + ' ' + + nixonprops.ElectDist + '</b><br/>' + nixonprops.QueensCountyGovernorDemocraticPrimarySept2018_Nixon + ' votes cast'
+        : 'Hover over an Electrion District to see votes cast for Nixon');
+  };
+
+nixoninfo.addTo(mymap);
+
+$('.nixoninfo').hide()
 
 // creating a legend for total votes cast
 var totalvotecountlegend = L.control({position: 'topright'});
@@ -108,3 +190,161 @@ totalvotecountlegend.onAdd = function (map) {
 };
 
 totalvotecountlegend.addTo(mymap);
+
+// controls & styling for CuomoLayer
+// creating a function that colors each ED by cuomo votes
+function cuomocount(QueensCountyGovernorDemocraticPrimarySept2018_Cuomo) {
+    return QueensCountyGovernorDemocraticPrimarySept2018_Cuomo > 350  ? '#980043' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Cuomo > 300  ? '#dd1c77' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Cuomo > 200  ? '#df65b0' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Cuomo > 100  ? '#d7b5d8' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Cuomo > 50   ? '#f1eef6' :
+                                                                        '#ffffff'
+      ;}
+
+// setting the cuomostyle so that it equates to the colors assigned by the function above
+function cuomostyle(cfeature) {
+    return {
+        fillColor: cuomocount(cfeature.properties.QueensCountyGovernorDemocraticPrimarySept2018_Cuomo),
+        weight: 2,
+        opacity: .001,
+        fillOpacity: 1.0,
+      };
+}
+
+// creating a function that highlights each ED when it's hovered over
+function cuomohighlightFeature(c) {
+    var CuomoLayer = c.target;
+
+   // the cuomo control that was made below is updated
+    cuomoinfo.update(CuomoLayer.feature.properties);
+
+    CuomoLayer.setStyle({
+        weight: 5,
+        color: '#666',
+        fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        CuomoLayer.bringToFront();
+    }
+}
+
+// creating a function that resets the map when user hovers out
+function cuomoresetHighlight(c) {
+    CuomoLayer.resetStyle(c.target);
+
+    // updating cuomo control based on mouseout
+    cuomoinfo.update();
+}
+
+// creating zoom on election district click
+function cuomozoomToFeature(c) {
+    mymap.fitBounds(c.target.getBounds());
+}
+
+// creating a function that groups together the all hover events and the zoom funciton that was created
+function cuomoonEachFeature(cfeature, CuomoLayer) {
+    CuomoLayer.on({
+        mouseover: cuomohighlightFeature,
+        mouseout: cuomoresetHighlight,
+        click: cuomozoomToFeature
+    });
+}
+
+// creating a function that colors each ED by nixon votes
+function nixoncount(QueensCountyGovernorDemocraticPrimarySept2018_Nixon) {
+    return QueensCountyGovernorDemocraticPrimarySept2018_Nixon > 350  ? '#980043' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Nixon > 300  ? '#dd1c77' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Nixon > 200  ? '#df65b0' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Nixon > 100  ? '#d7b5d8' :
+           QueensCountyGovernorDemocraticPrimarySept2018_Nixon > 50   ? '#f1eef6' :
+                                                                        '#ffffff'
+      ;}
+
+// setting the nixonstyle so that it equates to the colors assigned by the function above
+function nixonstyle(nfeature) {
+    return {
+        fillColor: nixoncount(nfeature.properties.QueensCountyGovernorDemocraticPrimarySept2018_Nixon),
+        weight: 2,
+        opacity: .001,
+        fillOpacity: 1.0,
+      };
+}
+
+// creating a function that highlights each ED when it's hovered over
+function nixonhighlightFeature(n) {
+    var NixonLayer = n.target;
+
+   // the cuomo control that was made below is updated
+    nixoninfo.update(NixonLayer.feature.properties);
+
+    NixonLayer.setStyle({
+        weight: 5,
+        color: '#666',
+        fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        NixonLayer.bringToFront();
+    }
+}
+
+// creating a function that resets the map when user hovers out
+function nixonresetHighlight(n) {
+    NixonLayer.resetStyle(n.target);
+    // updating nixon control based on mouseout
+    nixoninfo.update();
+}
+
+// creating zoom on election district click
+function nixonzoomToFeature(n) {
+    mymap.fitBounds(n.target.getBounds());
+}
+
+// creating a function that groups together the all hover events and the zoom funciton that was created
+function nixononEachFeature(nfeature, NixonLayer) {
+    NixonLayer.on({
+        mouseover: nixonhighlightFeature,
+        mouseout: nixonresetHighlight,
+        click: nixonzoomToFeature
+    });
+}
+
+// layer control added to map
+L.control.layers(baselayers, overlays).addTo(mymap);
+
+// creating function to control which divs show based on layer selection
+mymap.on('baselayerchange', function(eventLayer) {
+  if (eventLayer.name === 'Total Votes Cast'){
+  $('.totalvotecountinfo').show()
+  }
+  if (eventLayer.name === 'Total Votes Cast'){
+  $('.cuomoinfo').hide()
+  }
+  if (eventLayer.name === 'Total Votes Cast'){
+  $('.nixoninfo').hide()
+  }
+  if (eventLayer.name === 'Cynthia Nixon Votes'){
+  $('.nixoninfo').show()
+  }
+	if (eventLayer.name === 'Cynthia Nixon Votes'){
+	$('.totalvotecountinfo').hide()
+	}
+  if (eventLayer.name === 'Cynthia Nixon Votes'){
+  $('.cuomoinfo').hide()
+  }
+  if (eventLayer.name === 'Andrew Cuomo Votes'){
+  $('.cuomoinfo').show()
+  }
+	if (eventLayer.name === 'Andrew Cuomo Votes'){
+	$('.totalvotecountinfo').hide()
+	}
+  if (eventLayer.name === 'Andrew Cuomo Votes'){
+  $('.nixoninfo').hide()
+  }
+});
+
+// Total Votes Cast
+// Andrew Cuomo Votes
+// Cynthia Nixon Votes
