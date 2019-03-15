@@ -5,7 +5,7 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-// the layer that automatically loads
+// // the layer that automatically loads
 var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
     style: defaultstyle,
     onEachFeature: onEachFeature
@@ -50,7 +50,7 @@ var overlays = {
   "NYS Assembly Districts": AssemblyOverlay,
   "NYC Council Districts": CouncilOverlay,
 };
-
+//
 // creating a function that colors each ED by total votes cast
 function totalvotecount(QueensCountyGovernorDemocraticPrimarySept2018_Total) {
     return QueensCountyGovernorDemocraticPrimarySept2018_Total > 350  ? '#980043' :
@@ -114,7 +114,7 @@ function onEachFeature(feature, TotalVoteCountLayer) {
 var totalvotecountinfo = L.control();
 
 totalvotecountinfo.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'totalvoteinfo'); // create a div with a class "info"
+    this._div = L.DomUtil.create('div', 'totalvotecountinfo'); // create a div with a class "info"
     this.update();
     return this._div;
 };
@@ -127,8 +127,6 @@ totalvotecountinfo.update = function (props) {
 };
 
 totalvotecountinfo.addTo(mymap);
-
-$('.totalvotecountinfo').hide()
 
 // creating a custom div that changes the ed information within it based on mouseover
 var cuomoinfo = L.control();
@@ -310,11 +308,11 @@ function nixononEachFeature(nfeature, NixonLayer) {
         click: nixonzoomToFeature
     });
 }
-
+//
 // layer control added to map
 L.control.layers(baselayers, overlays).addTo(mymap);
 
-// creating function to control which divs show based on layer selection
+// // creating function to control which divs show based on layer selection
 mymap.on('baselayerchange', function(eventLayer) {
   if (eventLayer.name === 'Total Votes Cast'){
   $('.totalvotecountinfo').show()
@@ -344,7 +342,3 @@ mymap.on('baselayerchange', function(eventLayer) {
   $('.nixoninfo').hide()
   }
 });
-
-// Total Votes Cast
-// Andrew Cuomo Votes
-// Cynthia Nixon Votes
