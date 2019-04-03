@@ -346,35 +346,31 @@ mymap.on('baselayerchange', function() {
 		if (mymap.hasLayer(CouncilOverlay)) {
 				CouncilOverlay.bringToFront();
 		}
-});
-
-// // creating function to control which divs show based on layer selection
-mymap.on('baselayerchange', function(eventLayer) {
-  if (eventLayer.name === 'Total Votes Cast'){
-  $('.totalvotecountinfo').show()
-  }
-  if (eventLayer.name === 'Total Votes Cast'){
-  $('.cuomoinfo').hide()
-  }
-  if (eventLayer.name === 'Total Votes Cast'){
-  $('.nixoninfo').hide()
-  }
-  if (eventLayer.name === 'Cynthia Nixon Votes'){
-  $('.nixoninfo').show()
-  }
-	if (eventLayer.name === 'Cynthia Nixon Votes'){
-	$('.totalvotecountinfo').hide()
-	}
-  if (eventLayer.name === 'Cynthia Nixon Votes'){
-  $('.cuomoinfo').hide()
-  }
-  if (eventLayer.name === 'Andrew Cuomo Votes'){
-  $('.cuomoinfo').show()
-  }
-	if (eventLayer.name === 'Andrew Cuomo Votes'){
-	$('.totalvotecountinfo').hide()
-	}
-  if (eventLayer.name === 'Andrew Cuomo Votes'){
-  $('.nixoninfo').hide()
-  }
+		if (mymap.hasLayer(TotalVoteCountLayer)) {
+			$('.totalvotecountinfo').show()
+		}
+		if (mymap.hasLayer(TotalVoteCountLayer)) {
+			$('.cuomoinfo').hide()
+		}
+		if (mymap.hasLayer(TotalVoteCountLayer)) {
+			$('.nixoninfo').hide()
+		}
+		if (mymap.hasLayer(CuomoLayer)) {
+  		$('.cuomoinfo').show()
+		}
+		if (mymap.hasLayer(CuomoLayer)) {
+		 	$('.nixoninfo').hide()
+		}
+		if (mymap.hasLayer(CuomoLayer)) {
+			$('.totalvotecountinfo').hide();
+		}
+		if (mymap.hasLayer(NixonLayer)) {
+			$('.nixoninfo').show()
+		}
+		if (mymap.hasLayer(NixonLayer)) {
+			$('.cuomoinfo').hide()
+		}
+		if (mymap.hasLayer(NixonLayer)) {
+			$('.totalvotecountinfo').hide()
+		}
 });
