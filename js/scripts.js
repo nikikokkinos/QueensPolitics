@@ -1,25 +1,29 @@
-var mymap = L.map('map').setView([40.674649,-73.844261], 11);
+var mymap = L.map('map', {
+	center: [40.674649,-73.844261],
+	zoom: 11,
+});
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
 	maxZoom: 18,
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
-// // the layer that automatically loads
+// the layer that automatically loads
 var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
     style: defaultstyle,
     onEachFeature: onEachFeature
   }).addTo(mymap);
 
 	// setting the default styling for assembly districts
-	function assemblystyle(featurez) {
+	function assemblystyle(assemblyfeature) {
 	  return {
 	    fillColor: "purple",
 			fillOpacity: .02,
 	    color: "#2b2e5e",
-	  };
+		};
 	}
 
+// function to bind popup to assembly district
 function assemblyOnEachFeature(afeature, QueensAssemblyDistricts) {
 	  QueensAssemblyDistricts.bindPopup('<h4>Assembly District</h4>'+ ' ' + afeature.properties.AssemDist);
 	}
@@ -27,27 +31,38 @@ function assemblyOnEachFeature(afeature, QueensAssemblyDistricts) {
 var AssemblyOverlay = L.geoJSON(QueensAssemblyDistricts, {
     style: assemblystyle,
 		onEachFeature: assemblyOnEachFeature,
+		zIndex: 3000,
 })
 
+// function to bind popup to council district
 function councilOnEachFeature(cfeature, QueensCouncilDistricts) {
 	  QueensCouncilDistricts.bindPopup('<h4>Council District</h4>'+ ' ' + cfeature.properties.CounDist);
 	}
 
+function councilstyle(councilfeature) {
+	return {
+		fillColor: "purple",
+		fillOpacity: .02,
+		color: '#2b2e5e',
+	};
+}
+
 var CouncilOverlay = L.geoJson(QueensCouncilDistricts, {
-  fillColor: "purple",
-	fillOpacity: .02,
-  color: "#2b2e5e",
+	style: councilstyle,
 	onEachFeature: councilOnEachFeature,
+	zIndex: 3000,
 })
 
+// CouncilOverlay.overlayPane().style.zIndex = 2000;
+
 var CuomoLayer = L.geoJson(QueensElectionDistricts, {
-    style: cuomostyle,
-    onEachFeature: cuomoonEachFeature
+  style: cuomostyle,
+  onEachFeature: cuomoonEachFeature
 })
 
 var NixonLayer = L.geoJson(QueensElectionDistricts, {
-    style: nixonstyle,
-    onEachFeature: nixononEachFeature
+  style: nixonstyle,
+  onEachFeature: nixononEachFeature
 })
 
 // creating a group for all the base layers
@@ -59,10 +74,10 @@ var baselayers = {
 
 // creating a group for all the overlays
 var overlays = {
-  "NYS Assembly Districts": AssemblyOverlay,
-  "NYC Council Districts": CouncilOverlay,
+			"NYS Assembly Districts": AssemblyOverlay,
+			"NYC Council Districts": CouncilOverlay,
 };
-//
+
 // creating a function that colors each ED by total votes cast
 function totalvotecount(QueensCountyGovernorDemocraticPrimarySept2018_Total) {
     return QueensCountyGovernorDemocraticPrimarySept2018_Total > 350  ? '#980043' :
@@ -320,9 +335,18 @@ function nixononEachFeature(nfeature, NixonLayer) {
         click: nixonzoomToFeature
     });
 }
-//
+
 // layer control added to map
 L.control.layers(baselayers, overlays).addTo(mymap);
+
+mymap.on('baselayerchange', function() {
+    if (mymap.hasLayer(AssemblyOverlay)) {
+        AssemblyOverlay.bringToFront();
+    }
+		if (mymap.hasLayer(CouncilOverlay)) {
+				CouncilOverlay.bringToFront();
+		}
+});
 
 // // creating function to control which divs show based on layer selection
 mymap.on('baselayerchange', function(eventLayer) {

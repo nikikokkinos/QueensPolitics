@@ -4,17 +4,6 @@
   width: 100%;
 }
 
-#webpage_info {
-  position: absolute;
-  z-index: 1000;
-  background-color: #cecece;
-  opacity: .7;
-  top: 600px;
-  padding: 10px;
-  font-family: sans-serif;
-  font-size: 10px;
-}
-
 .totalvotecountinfo {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
