@@ -1,7 +1,7 @@
 var mymap = L.map('map', {
 	center: [40.674649,-73.844261],
 	zoom: 11,
-});
+}).setMinZoom(9);
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
 	maxZoom: 18,
@@ -372,5 +372,14 @@ mymap.on('baselayerchange', function() {
 		}
 		if (mymap.hasLayer(NixonLayer)) {
 			$('.totalvotecountinfo').hide()
+		}
+});
+
+mymap.on('overlayadd', function() {
+    if (mymap.hasLayer(AssemblyOverlay)) {
+        CouncilOverlay.removeLayer();
+    }
+		if (mymap.hasLayer(CouncilOverlay)) {
+				AssemblyOverlay.removeLayer();
 		}
 });
