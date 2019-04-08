@@ -4,6 +4,12 @@
   width: 100%;
 }
 
+.zoomControl {
+  padding: 10px;
+  font: sans-serif,
+  color: red,
+}
+
 .totalvotecountinfo {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;

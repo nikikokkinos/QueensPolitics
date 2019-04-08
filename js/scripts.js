@@ -1,12 +1,25 @@
 var mymap = L.map('map', {
 	center: [40.674649,-73.844261],
 	zoom: 11,
-}).setMinZoom(9);
+	minZoom: 9,
+});
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
 	maxZoom: 18,
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
+
+var geosearchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+
+	var geosearchResults = L.layerGroup().addTo(mymap);
+
+	geosearchControl.on('geosearchResults', function (data) {
+	geosearchResults.clearLayers();
+
+		for(var i = data.geosearchResults.length - 1; i>=0; i--){
+				geosearchResults.addLayer(L.marker(data.geosearchResults[i].latlng));
+	}
+});
 
 // the layer that automatically loads
 var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
@@ -31,7 +44,6 @@ function assemblyOnEachFeature(afeature, QueensAssemblyDistricts) {
 var AssemblyOverlay = L.geoJSON(QueensAssemblyDistricts, {
     style: assemblystyle,
 		onEachFeature: assemblyOnEachFeature,
-		zIndex: 3000,
 })
 
 // function to bind popup to council district
@@ -50,7 +62,6 @@ function councilstyle(councilfeature) {
 var CouncilOverlay = L.geoJson(QueensCouncilDistricts, {
 	style: councilstyle,
 	onEachFeature: councilOnEachFeature,
-	zIndex: 3000,
 })
 
 // CouncilOverlay.overlayPane().style.zIndex = 2000;
@@ -372,14 +383,5 @@ mymap.on('baselayerchange', function() {
 		}
 		if (mymap.hasLayer(NixonLayer)) {
 			$('.totalvotecountinfo').hide()
-		}
-});
-
-mymap.on('overlayadd', function() {
-    if (mymap.hasLayer(AssemblyOverlay)) {
-        CouncilOverlay.removeLayer();
-    }
-		if (mymap.hasLayer(CouncilOverlay)) {
-				AssemblyOverlay.removeLayer();
 		}
 });
