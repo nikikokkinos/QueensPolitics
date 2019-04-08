@@ -5,21 +5,8 @@ var mymap = L.map('map', {
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
-	maxZoom: 18,
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
-
-var geosearchControl = L.esri.Geocoding.geosearch().addTo(mymap);
-
-	var geosearchResults = L.layerGroup().addTo(mymap);
-
-	geosearchControl.on('geosearchResults', function (data) {
-	geosearchResults.clearLayers();
-
-		for(var i = data.geosearchResults.length - 1; i>=0; i--){
-				geosearchResults.addLayer(L.marker(data.geosearchResults[i].latlng));
-	}
-});
 
 // the layer that automatically loads
 var TotalVoteCountLayer = L.geoJson(QueensElectionDistricts, {
@@ -383,5 +370,33 @@ mymap.on('baselayerchange', function() {
 		}
 		if (mymap.hasLayer(NixonLayer)) {
 			$('.totalvotecountinfo').hide()
+		}
+});
+
+// // create the geocoding control and add it to the map
+// var geosearchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+//
+// // create an empty layer group to store the results and add it to the map
+// var geosearchResults = L.layerGroup().addTo(mymap);
+//
+// 	geosearchControl.on('geosearchResults', function (data) {
+// 	geosearchResults.clearLayers();
+//
+// 		for(i = data.geosearchResults.length - 1; i>=0; i--){
+// 				geosearchResults.addLayer(L.marker(data.geosearchResults[i].latlng));
+// 	}
+// });
+
+// create the geocoding control and add it to the map
+var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+
+// create an empty layer group to store the results and add it to the map
+var results = L.layerGroup().addTo(mymap);
+
+// listen for the results event and add every result to the map
+searchControl.on("results", function(data) {
+		results.clearLayers();
+		for (var i = data.results.length - 1; i >= 0; i--) {
+				results.addLayer(L.marker(data.results[i].latlng));
 		}
 });
