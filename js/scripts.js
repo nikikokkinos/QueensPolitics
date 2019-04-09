@@ -1,7 +1,6 @@
 var mymap = L.map('map', {
 	center: [40.674649,-73.844261],
 	zoom: 11,
-	minZoom: 9,
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
@@ -373,20 +372,6 @@ mymap.on('baselayerchange', function() {
 		}
 });
 
-// // create the geocoding control and add it to the map
-// var geosearchControl = L.esri.Geocoding.geosearch().addTo(mymap);
-//
-// // create an empty layer group to store the results and add it to the map
-// var geosearchResults = L.layerGroup().addTo(mymap);
-//
-// 	geosearchControl.on('geosearchResults', function (data) {
-// 	geosearchResults.clearLayers();
-//
-// 		for(i = data.geosearchResults.length - 1; i>=0; i--){
-// 				geosearchResults.addLayer(L.marker(data.geosearchResults[i].latlng));
-// 	}
-// });
-
 // create the geocoding control and add it to the map
 var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
 
@@ -397,6 +382,10 @@ var results = L.layerGroup().addTo(mymap);
 searchControl.on("results", function(data) {
 		results.clearLayers();
 		for (var i = data.results.length - 1; i >= 0; i--) {
-				results.addLayer(L.marker(data.results[i].latlng));
+				results.addLayer(L.marker(data.results[i].latlng).bindPopup('Address:' + ' ' + data.results[i].text));
 		}
 });
+
+// function assemblyOnEachFeature(afeature, QueensAssemblyDistricts) {
+// 	  QueensAssemblyDistricts.bindPopup('<h4>Assembly District</h4>'+ ' ' + afeature.properties.AssemDist);
+// 	}
